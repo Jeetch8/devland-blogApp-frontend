@@ -22,7 +22,7 @@ const Navbar = () => {
         <img
           src="https://i.ibb.co/DzZKZHY/medium-icon-white-on-black.png"
           height={60}
-          width={60}
+          width={65}
           className="mr-2"
           alt="logo"
         />
@@ -60,23 +60,28 @@ const Navbar = () => {
           </div>
           {dropDown && (
             <ul className="text-[17px] text-slate-600 font-medium absolute right-2 p-5 bg-white rounded-md shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] mt-3">
-              <li className="flex items-center gap-2 my-3">
+              <li className="flex items-center gap-2 my-3 cursor-pointer">
                 <FiUser className="text-[21px]" /> Profile
               </li>
-              <li className="flex items-center gap-2 my-3">
+              <li
+                className="flex items-center gap-2 my-3 cursor-pointer"
+                onClick={() => navigate("/me/lists")}
+              >
                 <IoBookmarksOutline className="text-[21px]" /> Lists
               </li>
-              <li className="flex items-center gap-2 my-3">
+              <li className="flex items-center gap-2 my-3 cursor-pointer">
                 <TbNotes className="text-[21px]" /> Stories
               </li>
-              <li className="flex items-center gap-2 my-3">
+              <li className="flex items-center gap-2 my-3 cursor-pointer">
                 <BsBarChart className="text-[21px]" /> Stats
               </li>
-              <li className="flex whitespace-nowrap items-center gap-5 py-3 border-t-[1px] border-slate-200">
+              <li className="flex whitespace-nowrap items-center gap-5 py-3 cursor-pointer border-t-[1px] border-slate-200">
                 Become a member <AiFillStar className="mr-2 fill-amber-500" />
               </li>
-              <li className="border-t-[1px] border-slate-200 pt-3">Sign out</li>
-              <li className="text-[14px] font-normal mb-3">
+              <li className="border-t-[1px] border-slate-200 pt-3 cursor-pointer">
+                Sign out
+              </li>
+              <li className="text-[14px] font-normal mb-3 cursor-pointer">
                 jeetkumar0898@gmail.com
               </li>
             </ul>
