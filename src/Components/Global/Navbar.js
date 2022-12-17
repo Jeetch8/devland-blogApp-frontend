@@ -10,6 +10,7 @@ import { AiFillStar } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const [ulElement, setUlElement] = useState("");
   const navigate = useNavigate();
   const [dropDown, setDropDown] = useState(false);
   window.addEventListener("scroll", () => {
@@ -17,14 +18,15 @@ const Navbar = () => {
   });
 
   return (
-    <div className="flex border-b-[1px] border-slate-200 py-2 justify-between items-center sticky top-0 bg-white">
+    <div className="flex border-b-[1px] border-slate-200 py-2 justify-between items-center sticky top-0 bg-white z-10">
       <div className="flex">
         <img
           src="https://i.ibb.co/DzZKZHY/medium-icon-white-on-black.png"
           height={60}
           width={65}
-          className="mr-2"
+          className="mr-2 cursor-pointer"
           alt="logo"
+          onClick={() => navigate("/")}
         />
         {/* Search bar */}
         <div className=" bg-zinc-100 flex items-center h-fit pl-3 pr-4 py-2 rounded-3xl">

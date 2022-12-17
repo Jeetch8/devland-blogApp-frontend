@@ -3,7 +3,7 @@ import React from "react";
 const RightSideSection = () => {
   const blogs = [123, 1, 23];
   return (
-    <div className="border-l-[1px] border-slate-200 pt-6 pl-8 max-w-[330px]">
+    <div className="border-l-[1px] border-slate-200 pt-6 pl-8 max-w-[330px] sticky top-0 h-fit">
       <h2 className="font-medium mb-8">Recommended to read</h2>
       {blogs.map(() => {
         return (
