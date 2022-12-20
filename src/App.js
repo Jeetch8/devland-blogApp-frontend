@@ -3,10 +3,12 @@ import Bookmarks from "./Pages/Bookmarks";
 import Home from "./Pages/Home";
 import WriteBlog from "./Pages/WriteBlog";
 import NotFoundPage from "./Pages/NotFoundPage";
-import Notifications from "./Pages/Notifications";
 import Drafts from "./Components/Stories/Drafts";
 import Published from "./Components/Stories/Published";
 import SingleBlog from "./Pages/SingleBlog";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+import Notifications from "./Pages/Notifications";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
       <Route path="/me/stories/published" element={<Published />} />
       <Route path="/blog/:blogId" element={<SingleBlog />} />
       <Route path="/notifications" element={<Notifications />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

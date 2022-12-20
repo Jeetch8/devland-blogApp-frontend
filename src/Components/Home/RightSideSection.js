@@ -5,9 +5,9 @@ const RightSideSection = () => {
   return (
     <div className="border-l-[1px] border-slate-200 pt-6 pl-8 max-w-[330px] sticky top-0 h-fit">
       <h2 className="font-medium mb-8">Recommended to read</h2>
-      {blogs.map(() => {
+      {blogs.map((key) => {
         return (
-          <div className="mb-4">
+          <div className="mb-4" key={key}>
             <div className="flex items-center mb-1">
               <img
                 className="overflow-hidden rounded-full h-[22px] w-[22px]"
@@ -24,9 +24,9 @@ const RightSideSection = () => {
         );
       })}
       <h2 className="font-medium mb-4 mt-14">Who to follow</h2>
-      {blogs.map(() => {
+      {blogs.map((key) => {
         return (
-          <div className="flex justify-between mb-3">
+          <div className="flex justify-between mb-3" key={key}>
             <div className="flex items-start">
               <img
                 className="overflow-hidden rounded-full h-[38px] w-[40px]"
