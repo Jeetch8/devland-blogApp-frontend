@@ -37,15 +37,54 @@ const Register = () => {
     },
     {
       onSuccess: (res) => {
+        const respData = res.data;
+        localStorage.clear();
+        localStorage.setItem("blogProfileImg", respData.profileImg);
+        localStorage.setItem("blogName", respData.userName);
+        localStorage.setItem("blogToken", respData.token);
+        localStorage.setItem("blogUserId", respData.userId);
+        localStorage.setItem("blogEmail", respData.email);
         if (res.data.success) {
-          toast.success("Registration Successfull", {
+          toast.success("Registration successfull", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+            theme: "dark",
+          });
+          toast.loading("Redirecting to home page", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+          });
+        }
+        setTimeout(() => {
+          toast.dismiss();
+          navigate("/");
+        }, 3000);
+        navigate("/");
+      },
+      onError: (res) => {
+        const msg = res.response.data.msg;
+        if (msg === "Password was incorrect") {
+          toast.error("Password is incorrect", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+          });
+        } else if (msg === "Email not found") {
+          toast.error("Email is incorrect", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+          });
+        } else {
+          toast.error("PSomething went wrong, please try again", {
             position: "top-center",
             autoClose: 3000,
             hideProgressBar: true,
             theme: "dark",
           });
         }
-        navigate("/");
       },
     }
   );

@@ -3,27 +3,45 @@ import JoditEditor from "jodit-react";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { AiOutlineUpload } from "react-icons/ai";
+import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const WriteBlog = () => {
+  const navigate = useNavigate();
   const [content, setContent] = useState("");
   const [blogImg, setBlogImg] = useState("");
   const [title, setTitle] = useState("");
+  const [blogStatus, setBlogStatus] = useState("published");
 
-  const { data, mutate } = useMutation(
+  const { mutate } = useMutation(
     ["createNewBlog"],
     () => {
-      return axios
-        .post("/blogs/createNewBlog", { HTMLBody: content, blogImg, title })
-        .then((res) => console.log(res));
+      return axios.post(
+        "/blogs/createNewBlog",
+        { HTMLBody: content, blogImg, title, status: blogStatus },
+        {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("blogToken"),
+          },
+        }
+      );
     },
     {
       onSuccess: (data) => {
-        console.log(data);
+        if (!data.data.success) return;
+        toast.success("New Blog created Successfully");
+        toast.loading("Redirecting to Home page");
+        setTimeout(() => {
+          toast.dismiss();
+          navigate("/");
+        }, 4000);
+      },
+      onError: (res) => {
+        console.log(res);
+        toast.error("something went wrong, please try again");
       },
     }
   );
-
-  console.log(data);
 
   const handleImageChange = (e) => {
     const img = e.target.files[0];
@@ -32,6 +50,15 @@ const WriteBlog = () => {
     axios
       .post("/imageUpload/imagaeUploadCloudniary", imgData)
       .then((res) => setBlogImg(res.data.image.src));
+  };
+
+  const handleBlogSubmit = (status) => {
+    setBlogStatus(status);
+    if (content === "" || blogImg === "" || title === "" || blogStatus === "") {
+      toast.error("All fields are mandatory");
+      return;
+    }
+    mutate();
   };
 
   return (
@@ -44,12 +71,15 @@ const WriteBlog = () => {
           height={60}
         />
         <div className="flex items-center gap-3 text-[13px]">
-          <button className="py-1 h-fit border-[1px] borde-solid-black rounded-full px-3">
+          <button
+            className="py-1 h-fit border-[1px] borde-solid-black rounded-full px-3"
+            onClick={() => handleBlogSubmit("draft")}
+          >
             Draft
           </button>
           <button
             className="bg-[#1A8917] py-1 px-2 rounded-full h-fit text-white"
-            onClick={() => mutate()}
+            onClick={() => handleBlogSubmit("published")}
           >
             Publish
           </button>
@@ -96,6 +126,7 @@ const WriteBlog = () => {
       <div className="mx-4">
         <JoditEditor onBlur={(e) => setContent(e)} value={content} />
       </div>
+      <Toaster />
     </div>
   );
 };

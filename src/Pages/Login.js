@@ -21,7 +21,6 @@ const Login = () => {
     {
       onSuccess: (res) => {
         const respData = res.data;
-        console.log(respData);
         localStorage.clear();
         localStorage.setItem("blogProfileImg", respData.profileImg);
         localStorage.setItem("blogName", respData.userName);
@@ -29,7 +28,7 @@ const Login = () => {
         localStorage.setItem("blogUserId", respData.userId);
         localStorage.setItem("blogEmail", respData.email);
         if (res.data.success) {
-          toast.success("Registration successfull", {
+          toast.success("Login successfull", {
             position: "top-center",
             autoClose: 3000,
             hideProgressBar: true,
@@ -47,33 +46,32 @@ const Login = () => {
         }, 3000);
       },
       onError: (res) => {
-        registerMutateError(res.response.data.msg);
+        const msg = res.response.data.msg;
+        if (msg === "Password was incorrect") {
+          toast.error("Password is incorrect", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+          });
+        } else if (msg === "Email not found") {
+          toast.error("Email is incorrect", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+          });
+        } else {
+          toast.error("PSomething went wrong, please try again", {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+            theme: "dark",
+          });
+        }
       },
     }
   );
 
-  const registerMutateError = (msg) => {
-    if (msg === "Password was incorrect") {
-      toast.error("Password is incorrect", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: true,
-      });
-    } else if (msg === "Email not found") {
-      toast.error("Email is incorrect", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: true,
-      });
-    } else {
-      toast.error("PSomething went wrong, please try again", {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: true,
-        theme: "dark",
-      });
-    }
-  };
+  const registerMutateError = (msg) => {};
 
   const loginFunc = () => {
     if (!password || !email) {
