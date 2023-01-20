@@ -6,11 +6,9 @@ import { PropagateLoader } from "react-spinners";
 import Navbar from "../Components/Global/Navbar";
 import BlogCard from "../Components/Home/BlogCard";
 import RightSideSection from "../Components/Home/RightSideSection";
-document.title = "Medium Clone";
 
-const Home = ({ setFullBookmarks, fullBookmarks }) => {
+const Home = () => {
   const [allBlogs, setAllBlogs] = useState([]);
-  const [allBookedBlogs, setAllBookedBlogs] = useState([]);
   const { isLoading } = useQuery(
     ["fetchingAllBlogs"],
     () => {
@@ -26,18 +24,6 @@ const Home = ({ setFullBookmarks, fullBookmarks }) => {
       onSuccess: (res) => {
         console.log(res.data);
         setAllBlogs([...res.data.blogs]);
-        setAllBookedBlogs([...res.data.allBlogList]);
-        setFullBookmarks([...res.data.bookmarks.bookmarks]);
-        const bookmarks = [...res.data.bookmarks.bookmarks];
-        bookmarks.forEach((el) => {
-          const catName = `${el.category.title.split(" ").join(".")}.Bookmark`;
-          let blogsList = [...el.category.blogs];
-          let blogsId = [];
-          blogsList.forEach((blog) => {
-            blogsId.push(blog._id);
-          });
-          localStorage.setItem(catName, `${blogsId.toString()}`);
-        });
       },
       onError: (res) => {
         toast.error("Something went wrong");
@@ -57,14 +43,7 @@ const Home = ({ setFullBookmarks, fullBookmarks }) => {
               </div>
             ) : (
               allBlogs.map((blog, index) => {
-                return (
-                  <BlogCard
-                    key={index}
-                    blog={blog}
-                    allBookedBlogs={allBookedBlogs}
-                    fullBookmarks={fullBookmarks}
-                  />
-                );
+                return <BlogCard key={index} blog={blog} />;
               })
             )}
           </div>
