@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Drawer from "../../Components/Drawer";
 import AllBlogsSection from "../../Components/HomePage/AllBlogsSection";
@@ -6,9 +6,34 @@ import NavBar from "../../Components/HomePage/GlobalComponents/NavBar";
 import axios from "axios";
 import { FaTwitter } from "react-icons/fa";
 import { BsGithub, BsInstagram } from "react-icons/bs";
+import { toast } from "react-hot-toast";
+import { useJwt } from "react-jwt";
+import { Navigate } from "react-router-dom";
 
 function HomePage() {
   const [allBlogs, setAllBlogs] = useState([]);
+  const token = localStorage.getItem("blogToken");
+  const { isExpired, decodedToken } = useJwt(token);
+  useEffect(() => {
+    if (token) {
+      if (isExpired) {
+        toast.error("Session expired");
+        toast.loading("Redirecting to login page");
+        setTimeout(() => {
+          Navigate("/login");
+        }, 3000);
+        return;
+      }
+      console.log(isExpired);
+      console.log(decodedToken);
+    } else {
+      toast.error("Not authorized to page");
+      toast.loading("Redirecting to login page");
+      setTimeout(() => {
+        Navigate("/login");
+      }, 3000);
+    }
+  }, []);
   const { isFetching, isLoading } = useQuery(
     ["fetchAllBlogs"],
     () => {

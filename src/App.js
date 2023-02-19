@@ -8,6 +8,7 @@ import Profile from "./Pages/User/Profile";
 import Register from "./Pages/User/Register";
 import SingleBlog from "./Pages/User/SingleBlog";
 import WriteBlog from "./Pages/User/WriteBlog";
+import PrivateRoutes from "./Utills/PrivateRoutes";
 
 const App = () => {
   return (
@@ -15,10 +16,12 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/bookmarks" element={<Bookmark />} />
+        <Route element={<PrivateRoutes />}>
+          <Route path="/bookmarks" element={<Bookmark />} />
+          <Route path="/writeblog" element={<WriteBlog />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
         <Route path="/register" element={<Register />} />
-        <Route path="/writeblog" element={<WriteBlog />} />
-        <Route path="/profile" element={<Profile />} />
         <Route path="/blog/:blogId" element={<SingleBlog />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
