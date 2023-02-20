@@ -8,9 +8,11 @@ import { FaTwitter } from "react-icons/fa";
 import { BsGithub, BsInstagram } from "react-icons/bs";
 import { toast } from "react-hot-toast";
 import { useJwt } from "react-jwt";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { baseDomain } from "../../Utills/baseDomain";
 
 function HomePage() {
+  const navigate = useNavigate();
   const [allBlogs, setAllBlogs] = useState([]);
   const token = localStorage.getItem("blogToken");
   const { isExpired, decodedToken } = useJwt(token);
@@ -20,7 +22,7 @@ function HomePage() {
         toast.error("Session expired");
         toast.loading("Redirecting to login page");
         setTimeout(() => {
-          Navigate("/login");
+          navigate("/login");
         }, 3000);
         return;
       }
@@ -30,16 +32,15 @@ function HomePage() {
       toast.error("Not authorized to page");
       toast.loading("Redirecting to login page");
       setTimeout(() => {
-        Navigate("/login");
+        navigate("/login");
       }, 3000);
     }
   }, []);
+
   const { isFetching, isLoading } = useQuery(
     ["fetchAllBlogs"],
     () => {
-      return axios.get(
-        "https://blue-green-sea-lion-garb.cyclic.app/api/v1/blogs"
-      );
+      return axios.get(`${baseDomain}/api/v1/blogs`);
     },
     {
       onSuccess: (data) => {

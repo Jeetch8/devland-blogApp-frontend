@@ -16,7 +16,10 @@ const Login = () => {
   const { mutate } = useMutation(
     ["loginReq"],
     () => {
-      return axios.post("/auth/login", { email, password });
+      return axios.post("http://localhost:5000/api/v1/auth/login", {
+        email,
+        password,
+      });
     },
     {
       onSuccess: (res) => {

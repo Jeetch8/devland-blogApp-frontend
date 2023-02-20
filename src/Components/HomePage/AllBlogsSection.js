@@ -22,37 +22,43 @@ const AllBlogsSection = ({ allBlogs, isFetching, isLoading }) => {
   }
 
   return (
-    <div className="mx-[10vw] my-[5vh] mt-[7vh]">
+    <div className="mx-[10vw] my-[5vh] mt-[7vh] relative">
       <ResponsiveMasonry columnsCountBreakPoints={breakpointColumnsObj}>
         <Masonry columnsCount={3} gutter="50px">
-          {allBlogs?.map((blog) => {
-            return (
-              <div className=" border-b-[1px] pb-8" key={blog._id}>
-                <img
-                  src={blog.blogImg}
-                  alt=""
-                  className="rounded-md mb-[15px] cursor-pointer"
-                  onClick={() => navigate(`/blog/${blog._id}`)}
-                />
-                <div className="flex justify-between text-zinc-500 my-4">
-                  <h4>21 Dec 2021</h4>
-                  <div className="flex items-baseline gap-1">
-                    <SlHeart />
-                    32
+          {allBlogs.length == 0 ? (
+            <p className="text-center absolute top-0 left-[40%]">
+              No Blogs to show here
+            </p>
+          ) : (
+            allBlogs?.map((blog) => {
+              return (
+                <div className=" border-b-[1px] pb-8" key={blog._id}>
+                  <img
+                    src={blog.blogImg}
+                    alt=""
+                    className="rounded-md mb-[15px] cursor-pointer"
+                    onClick={() => navigate(`/blog/${blog._id}`)}
+                  />
+                  <div className="flex justify-between text-zinc-500 my-4">
+                    <h4>21 Dec 2021</h4>
+                    <div className="flex items-baseline gap-1">
+                      <SlHeart />
+                      32
+                    </div>
                   </div>
+                  <h4
+                    className=" font-bold text-[20px] hover:text-cyan-600 cursor-pointer"
+                    onClick={() => navigate(`/blog/${blog._id}`)}
+                  >
+                    {blog.title}
+                  </h4>
+                  <h3 className="text-[15px]">
+                    {convert(blog.HTMLBody).substring(0, 215)}
+                  </h3>
                 </div>
-                <h4
-                  className=" font-bold text-[20px] hover:text-cyan-600 cursor-pointer"
-                  onClick={() => navigate(`/blog/${blog._id}`)}
-                >
-                  {blog.title}
-                </h4>
-                <h3 className="text-[15px]">
-                  {convert(blog.HTMLBody).substring(0, 215)}
-                </h3>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </Masonry>
       </ResponsiveMasonry>
     </div>
