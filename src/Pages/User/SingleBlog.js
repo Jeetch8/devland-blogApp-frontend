@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { CiBookmarkPlus } from "react-icons/ci";
-import { FiMoreHorizontal } from "react-icons/fi";
 import Navbar from "../../Components/HomePage/GlobalComponents/NavBar";
-import { IoShareOutline } from "react-icons/io5";
 import { GoComment } from "react-icons/go";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -11,26 +9,38 @@ import axios from "axios";
 import { convert } from "html-to-text";
 import { HashLoader } from "react-spinners";
 import toast from "react-hot-toast";
+import { baseDomain } from "../../Utills/baseDomain";
+import { FaBookmark } from "react-icons/fa";
 
 const SingleBlog = () => {
   const [blogContent, setBlogContent] = useState({});
   const [liked, setLiked] = useState(false);
+  const [bookmarked, setBookmarked] = useState(false);
   const params = useParams();
+  let userToken = localStorage.getItem("blogToken");
   const { isFetching, isLoading } = useQuery(
     ["fetchblog"],
     () => {
+      if (userToken) {
+        return axios.get(
+          `http://localhost:5000/api/v1/blogs/registerd_user/${params.blogId}`,
+          {
+            headers: {
+              authorization: `Bearer ${userToken}`,
+            },
+          }
+        );
+      }
       return axios.get(`http://localhost:5000/api/v1/blogs/${params.blogId}`);
     },
     {
       onSuccess: (data) => {
         const blog = data.data.blog;
+        console.log(data.data);
         setBlogContent(blog);
-        console.log(blog);
-        for (let i = 0; i < blog.likedArray.length; i++) {
-          if (blog.likedArray[i]._id === localStorage.getItem("blogUserId")) {
-            setLiked(true);
-            break;
-          }
+        if (userToken) {
+          setLiked(data.data.isLiked);
+          setBookmarked(data.data.isBookmarked);
         }
       },
     }
@@ -39,9 +49,9 @@ const SingleBlog = () => {
   // Write a quesry to like a blog
   const likeBlog = async () => {
     try {
-      const response = await axios
+      await axios
         .patch(
-          `http://localhost:5000/api/v1/blogs/${params.blogId}/like`,
+          `${baseDomain}/api/v1/blogs/${params.blogId}/like`,
           {},
           {
             headers: {
@@ -61,6 +71,33 @@ const SingleBlog = () => {
   };
   // Write a query to comment on a blog
   // Write a query to bookmark a blog
+  const toggleBookmark = async () => {
+    try {
+      const response = await axios
+        .patch(
+          `${baseDomain}/api/v1/user/toggleBookmark/${params.blogId}`,
+          {},
+          {
+            headers: {
+              authorization: `Bearer ${localStorage.getItem("blogToken")}`,
+            },
+          }
+        )
+        .then((res) => {
+          if (res.data.bookmarked) {
+            toast.success("Blog bookmarked");
+          } else {
+            toast.success("Blog removed from bookmark");
+          }
+          setBookmarked(res.data.bookmarked);
+        });
+      // Handle the response or update the state accordingly
+    } catch (error) {
+      console.log(error);
+      // Handle the error
+      toast.error("Something went wrong");
+    }
+  };
 
   if (isFetching || isLoading) {
     return (
@@ -104,8 +141,11 @@ const SingleBlog = () => {
                 )}
                 <GoComment />
               </div>
-              <div className="flex items-center gap-5 text-[25px]">
-                <CiBookmarkPlus />
+              <div
+                className="flex items-center gap-5 text-[25px] cursor-pointer"
+                onClick={() => toggleBookmark()}
+              >
+                {bookmarked ? <FaBookmark /> : <CiBookmarkPlus />}
               </div>
             </div>
           </div>
