@@ -75,8 +75,6 @@ const Login = () => {
     }
   );
 
-  const registerMutateError = (msg) => {};
-
   const loginFunc = () => {
     if (!password || !email) {
       toast.error("All fields are mandatory to login", {

@@ -6,7 +6,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import axios from "axios";
 import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-axios.defaults.baseURL = "https://blue-green-sea-lion-garb.cyclic.app/api/v1";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { baseDomain } from "./Utills/baseDomain";
+axios.defaults.baseURL = baseDomain;
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,6 +25,7 @@ root.render(
         <App />
         <Toaster />
       </BrowserRouter>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </React.StrictMode>
 );

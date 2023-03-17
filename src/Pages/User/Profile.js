@@ -61,7 +61,7 @@ const Profile = () => {
         />
         <h2 className="col-span-2 my-[20px]">
           Looking to change password,{" "}
-          <a href="" className="text-blue-500 underline">
+          <a href="/" className="text-blue-500 underline">
             click here
           </a>
         </h2>

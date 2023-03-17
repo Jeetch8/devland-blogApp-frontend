@@ -73,7 +73,7 @@ const SingleBlog = () => {
   // Write a query to bookmark a blog
   const toggleBookmark = async () => {
     try {
-      const response = await axios
+      await axios
         .patch(
           `${baseDomain}/api/v1/user/toggleBookmark/${params.blogId}`,
           {},

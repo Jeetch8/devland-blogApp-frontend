@@ -15,7 +15,10 @@ function HomePage() {
   const navigate = useNavigate();
   const [allBlogs, setAllBlogs] = useState([]);
   const token = localStorage.getItem("blogToken");
-  const { isExpired, decodedToken } = useJwt(token);
+  const [searchQuery, setSearchQuery] = useState("");
+  const { isExpired } = useJwt(token);
+  const [showDrawer, setShowDrawer] = useState(false);
+
   useEffect(() => {
     if (token) {
       if (isExpired) {
@@ -26,8 +29,6 @@ function HomePage() {
         }, 3000);
         return;
       }
-      console.log(isExpired);
-      console.log(decodedToken);
     } else {
       toast.error("Not authorized to page");
       toast.loading("Redirecting to login page");
@@ -37,9 +38,13 @@ function HomePage() {
     }
   }, []);
 
-  const { isFetching, isLoading } = useQuery(
+  const { isFetching, isLoading, refetch } = useQuery(
     ["fetchAllBlogs"],
     () => {
+      if (searchQuery)
+        return axios.get(
+          `${baseDomain}/api/v1/blogs/search?searchQuery=${searchQuery}`
+        );
       return axios.get(`${baseDomain}/api/v1/blogs`);
     },
     {
@@ -48,10 +53,16 @@ function HomePage() {
       },
     }
   );
-  const [showDrawer, setShowDrawer] = useState(false);
+
   return (
     <div className="font-libre">
-      <NavBar setShowDrawer={setShowDrawer} showDrawer={showDrawer} />
+      <NavBar
+        setShowDrawer={setShowDrawer}
+        showDrawer={showDrawer}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        refetch={refetch}
+      />
       <AllBlogsSection
         allBlogs={allBlogs}
         isFetching={isFetching}

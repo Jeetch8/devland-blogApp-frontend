@@ -5,24 +5,14 @@ import { TfiWrite } from "react-icons/tfi";
 import { BiLogIn } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 
-const DropDownNavBar = ({ setShowDropDown, showDropDown }) => {
-  const ulElement = useRef(null);
+const DropDownNavBar = ({ setShowDropDown, showDropDown, dropDownRef }) => {
   const navigate = useNavigate();
 
-  document.addEventListener("scroll", (e) => {
-    if (
-      ulElement.current &&
-      showDropDown &&
-      !ulElement.current.contains(e.target)
-    ) {
-      setShowDropDown(false);
-    }
-  });
-  const isLogged = false;
+  const isLoggedin = localStorage.getItem("blogToken") ? true : false;
   return (
     <div
-      className="absolute border-2 border-zinc-300 bg-white border-b-none rounded-md top-7 font-extralight"
-      ref={ulElement}
+      className="absolute border-2 border-zinc-300 bg-white border-b-none rounded-md top-7 font-extralight right-0"
+      ref={dropDownRef}
     >
       <ul>
         <li
@@ -39,19 +29,21 @@ const DropDownNavBar = ({ setShowDropDown, showDropDown }) => {
           />
           Bookmarks
         </li>
-        {!isLogged && (
+        {!isLoggedin && (
           <li className="border-b-[1px]  pr-[20px] pl-[15px] pt-[20px] pb-[4px] flex items-center cursor-pointer gap-2">
             <BiLogIn className="text-[22px]" />
             Login/Register
           </li>
         )}
-        <li className="border-b-[1px]  px-[20px] pt-[20px] pb-[4px] flex items-center cursor-pointer gap-2">
-          <TfiWrite
-            className="text-[20px]"
-            onClick={() => navigate("/writeBlog")}
-          />
-          Write Blog
-        </li>
+        {isLoggedin && (
+          <li className="border-b-[1px]  px-[20px] pt-[20px] pb-[4px] flex items-center cursor-pointer gap-2">
+            <TfiWrite
+              className="text-[20px]"
+              onClick={() => navigate("/writeBlog")}
+            />
+            Write Blog
+          </li>
+        )}
         <li className="px-[20px] whitespace-nowrap pt-4">
           <h2 className="font-semibold">Change Theme To:</h2>
           <div className="flex gap-2 justify-center py-2">
