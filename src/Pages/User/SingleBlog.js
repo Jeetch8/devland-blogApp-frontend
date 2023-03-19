@@ -16,27 +16,26 @@ const SingleBlog = () => {
   const [blogContent, setBlogContent] = useState({});
   const [liked, setLiked] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
+  const [newCommentText, setNewCommentText] = useState("");
   const params = useParams();
   let userToken = localStorage.getItem("blogToken");
+  let userProfileImg = localStorage.getItem("blogProfileImg");
+
   const { isFetching, isLoading } = useQuery(
     ["fetchblog"],
     () => {
       if (userToken) {
-        return axios.get(
-          `http://localhost:5000/api/v1/blogs/registerd_user/${params.blogId}`,
-          {
-            headers: {
-              authorization: `Bearer ${userToken}`,
-            },
-          }
-        );
+        return axios.get(`/api/v1/blogs/registerd_user/${params.blogId}`, {
+          headers: {
+            authorization: `Bearer ${userToken}`,
+          },
+        });
       }
-      return axios.get(`http://localhost:5000/api/v1/blogs/${params.blogId}`);
+      return axios.get(`/api/v1/blogs/${params.blogId}`);
     },
     {
       onSuccess: (data) => {
         const blog = data.data.blog;
-        console.log(data.data);
         setBlogContent(blog);
         if (userToken) {
           setLiked(data.data.isLiked);
@@ -76,7 +75,7 @@ const SingleBlog = () => {
       await axios
         .patch(
           `${baseDomain}/api/v1/user/toggleBookmark/${params.blogId}`,
-          {},
+          { content: newCommentText },
           {
             headers: {
               authorization: `Bearer ${localStorage.getItem("blogToken")}`,
@@ -99,6 +98,33 @@ const SingleBlog = () => {
     }
   };
 
+  const makeCommentOnBlog = async () => {
+    if (newCommentText.length < 3) {
+      toast.error("Comment should be atleast 3 characters long");
+      return;
+    }
+    await axios
+      .put(
+        `${baseDomain}/api/v1/blogs/${params.blogId}/comment`,
+        { content: newCommentText, blogId: blogContent._id },
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("blogToken")}`,
+          },
+        }
+      )
+      .then((res) => {
+        if (res.data.success) {
+          toast.success("Comment added successfully");
+          blogContent.commentArray.push(res.data.comment);
+          setNewCommentText("");
+        }
+      })
+      .catch((err) => {
+        toast.error("Something went wrong");
+      });
+  };
+
   if (isFetching || isLoading) {
     return (
       <div className="h-[80vh] flex justify-center items-center">
@@ -112,7 +138,7 @@ const SingleBlog = () => {
       <div>
         <div className="max-w-[1100px] mx-auto">
           <div className="max-w-[700px] mx-auto mt-10">
-            {/* Top Section with profile and oyher details */}
+            {/* Top Section with profile and other details */}
             {/* Title */}
             <h1 className="text-[30px] my-6 text-center">
               {blogContent.title}
@@ -149,8 +175,63 @@ const SingleBlog = () => {
               </div>
             </div>
           </div>
+          {/* Comment section */}
+          <div className="mx-auto max-w-[700px] py-14">
+            <h2 className=" font-semibold text-lg">Comments</h2>
+            <div className="my-5 border-4 border-gray-200 border-solid rounded-xl px-4 py-4">
+              <div className="flex gap-x-5">
+                <div>
+                  <div
+                    className="h-[70px] w-[70px] overflow-hidden rounded-full"
+                    style={{
+                      background: `url(${userProfileImg})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  ></div>
+                </div>
+                <textarea
+                  name=""
+                  id=""
+                  className="w-full p-2 outline-none border-none"
+                  placeholder="Comment here..."
+                  rows="6"
+                  value={newCommentText}
+                  onChange={(e) => setNewCommentText(e.target.value)}
+                ></textarea>
+              </div>
+              <div className="flex justify-end mt-2">
+                <button
+                  className=" bg-green-500 border-2 border-green-300 hover:bg-green-700 text-white px-3 py-2 rounded-md text-sm"
+                  onClick={() => makeCommentOnBlog()}
+                >
+                  Add comment
+                </button>
+              </div>
+            </div>
+            {blogContent?.commentArray &&
+              blogContent.commentArray.map((comment) => {
+                return (
+                  <div className="flex gap-x-5 my-5 px-4 py-4 border-b-2 border-gray-200">
+                    <div>
+                      <div
+                        className="h-[50px] w-[50px] overflow-hidden rounded-full"
+                        style={{
+                          background: `url(${comment.userId.profileImg})`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }}
+                      ></div>
+                    </div>
+                    <div>
+                      <h2 className="font-semibold">{comment.userId.name}</h2>
+                      <p>{comment.commentText}</p>
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
         </div>
-        <div></div>
       </div>
     </div>
   );

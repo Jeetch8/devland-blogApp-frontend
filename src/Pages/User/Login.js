@@ -6,6 +6,7 @@ import { RxEyeOpen } from "react-icons/rx";
 import { Link, useNavigate } from "react-router-dom";
 // import { toast, ToastContainer } from "react-toastify";
 import toast, { Toaster } from "react-hot-toast";
+import { baseDomain } from "../../Utills/baseDomain";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const Login = () => {
   const { mutate } = useMutation(
     ["loginReq"],
     () => {
-      return axios.post("http://localhost:5000/api/v1/auth/login", {
+      return axios.post(baseDomain + "/api/v1/auth/login", {
         email,
         password,
       });
