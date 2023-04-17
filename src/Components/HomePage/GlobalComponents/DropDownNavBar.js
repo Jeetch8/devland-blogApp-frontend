@@ -30,13 +30,16 @@ const DropDownNavBar = ({ setShowDropDown, showDropDown, dropDownRef }) => {
           Bookmarks
         </li>
         {!isLoggedin && (
-          <li className="border-b-[1px]  pr-[20px] pl-[15px] pt-[20px] pb-[4px] flex items-center cursor-pointer gap-2">
+          <li
+            className="border-b-[1px] pr-[20px] pl-[15px] pt-[20px] pb-[4px] flex items-center cursor-pointer gap-2"
+            onClick={() => navigate("/bookmarks")}
+          >
             <BiLogIn className="text-[22px]" />
             Login/Register
           </li>
         )}
         {isLoggedin && (
-          <li className="border-b-[1px]  px-[20px] pt-[20px] pb-[4px] flex items-center cursor-pointer gap-2">
+          <li className="border-b-[1px] px-[20px] pt-[20px] pb-[4px] flex items-center cursor-pointer gap-2">
             <TfiWrite
               className="text-[20px]"
               onClick={() => navigate("/writeBlog")}

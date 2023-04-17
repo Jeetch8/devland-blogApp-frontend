@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { AiFillLike, AiOutlineLike } from "react-icons/ai";
 import { CiBookmarkPlus } from "react-icons/ci";
 import Navbar from "../../Components/HomePage/GlobalComponents/NavBar";
@@ -18,6 +18,7 @@ const SingleBlog = () => {
   const [bookmarked, setBookmarked] = useState(false);
   const [newCommentText, setNewCommentText] = useState("");
   const params = useParams();
+  const commentAreaRef = useRef(null);
   let userToken = localStorage.getItem("blogToken");
   let userProfileImg = localStorage.getItem("blogProfileImg");
 
@@ -36,6 +37,7 @@ const SingleBlog = () => {
     {
       onSuccess: (data) => {
         const blog = data.data.blog;
+        console.log(data.data);
         setBlogContent(blog);
         if (userToken) {
           setLiked(data.data.isLiked);
@@ -165,7 +167,14 @@ const SingleBlog = () => {
                     className="cursor-pointer"
                   />
                 )}
-                <GoComment />
+                <GoComment
+                  className="cursor-pointer"
+                  onClick={() =>
+                    commentAreaRef.current?.scrollIntoView({
+                      behavior: "smooth",
+                    })
+                  }
+                />
               </div>
               <div
                 className="flex items-center gap-5 text-[25px] cursor-pointer"
@@ -176,7 +185,7 @@ const SingleBlog = () => {
             </div>
           </div>
           {/* Comment section */}
-          <div className="mx-auto max-w-[700px] py-14">
+          <div className="mx-auto max-w-[700px] py-14" ref={commentAreaRef}>
             <h2 className=" font-semibold text-lg">Comments</h2>
             <div className="my-5 border-4 border-gray-200 border-solid rounded-xl px-4 py-4">
               <div className="flex gap-x-5">
@@ -212,7 +221,10 @@ const SingleBlog = () => {
             {blogContent?.commentArray &&
               blogContent.commentArray.map((comment) => {
                 return (
-                  <div className="flex gap-x-5 my-5 px-4 py-4 border-b-2 border-gray-200">
+                  <div
+                    className="flex gap-x-5 my-5 px-4 py-4 border-b-2 border-gray-200"
+                    key={comment._id}
+                  >
                     <div>
                       <div
                         className="h-[50px] w-[50px] overflow-hidden rounded-full"
