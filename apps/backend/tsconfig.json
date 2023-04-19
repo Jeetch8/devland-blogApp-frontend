@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "sourceMap": true,
+    "target": "esnext",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "baseUrl": "src",
+    "paths": {
+      "@src/*": [
+        "*"
+      ],
+      "@utils/*": [
+        "utils/*"
+      ],
+      "@config/*": [
+        "config/*"
+      ],
+      "@interfaces/*": [
+        "interfaces/*"
+      ],
+    }
+  },
+  "include": [
+    "./*.js",
+    "src/**/**/*.ts",
+    "src/**/*.js",
+    "test/**/*.ts",
+    "src/passport.s",
+  ],
+  "exclude": [
+    "node_modules",
+    "src/logs"
+  ]
+}
