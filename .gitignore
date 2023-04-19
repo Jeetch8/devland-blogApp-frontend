@@ -1,5 +1,31 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+/apps/**/node_modules
+/apps/**/dist
+/apps/**/build
+/apps/**/out
+/apps/**/.next
+/apps/**/.vercel
+/apps/**/.env   
+/apps/**/.env.local
+/apps/**/.env.development.local
+/apps/**/.env.test.local
+/apps/**/.env.production.local
+
+
+/packages/**/node_modules
+/packages/**/dist
+/packages/**/build  
+/packages/**/out
+/packages/**/.next
+/packages/**/.vercel
+/packages/**/.env
+/packages/**/.env.local
+/packages/**/.env.development.local
+/packages/**/.env.test.local    
+/packages/**/.env.production.local
+    
+
 # Dependencies
 node_modules
 .pnp
