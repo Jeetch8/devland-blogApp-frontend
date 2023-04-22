@@ -4,6 +4,7 @@ import HomeLayout from "./layouts/HomeLayout";
 import Register from "./pages/Register";
 import VerifyEmail from "./pages/VerifyEmail";
 import Home from "./pages/Home";
+import WriteBlog from "./pages/WriteBlog";
 
 const App = () => {
   return (
@@ -11,6 +12,7 @@ const App = () => {
       <Route element={<HomeLayout />}>
         <Route index element={<Home />} />
       </Route>
+      <Route path="write" element={<WriteBlog />} />
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
       <Route path="/verify-email" element={<VerifyEmail />} />

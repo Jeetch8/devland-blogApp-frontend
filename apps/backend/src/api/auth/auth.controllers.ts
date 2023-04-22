@@ -30,7 +30,6 @@ export const register_controller = async (req: Request, res: Response) => {
   const payload = {
     userId: user.id,
     email: user.email,
-    name: user.name,
   };
   const token = generateJWTToken(payload);
   await createUserEmailToken_dao(user.id, token);
@@ -64,7 +63,6 @@ export const login_controller = async (req: Request, res: Response) => {
   const payload = {
     userId: user.id,
     email: user.email,
-    name: user.name,
   };
   const token = generateJWTToken(payload);
   const temp = {
@@ -102,7 +100,6 @@ export const forgotPasswordEmailRequest_controller = async (req: Request, res: R
   const payload = {
     userId: user.id,
     email: user.email,
-    name: user.name,
   };
   const token = generateJWTToken(payload);
   await createUserPasswordToken_dao(user.id, token);

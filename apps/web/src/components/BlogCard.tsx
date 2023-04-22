@@ -11,14 +11,9 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { Button, CardActionArea, CardActions } from "@mui/material";
+import { IBlog } from "../interfaces/blog.interface";
 
-export default function BlogCard({
-  title,
-  description,
-  image,
-  author,
-  date,
-}: BlogCardProps) {
+export default function BlogCard({ obj }: { obj: IBlog }) {
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardActionArea>

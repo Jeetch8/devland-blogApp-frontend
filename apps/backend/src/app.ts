@@ -9,7 +9,7 @@ import cors from 'cors';
 import * as middlewares from './middleware/ErrorHandlers';
 import { stream } from '@utils/logger';
 import { CREDENTIALS, LOG_FORMAT, ORIGIN } from '@config/index';
-import authRouter from './api/auth/auth.routes';
+import { intializeRoutes } from './api/allRoutes';
 
 const app = express();
 
@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use('/api/v1/auth', authRouter);
+intializeRoutes(app);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);

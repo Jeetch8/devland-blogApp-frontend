@@ -6,6 +6,7 @@ export interface ITokenUser {
   email: string;
   name: string;
   profile_img: string;
+  token: string;
 }
 
 interface initStateType {

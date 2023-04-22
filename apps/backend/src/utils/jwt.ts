@@ -5,7 +5,6 @@ import { ForbiddenError } from './customErrors';
 interface IJWTUser {
   userId: string;
   email: string;
-  name: string;
 }
 
 export const generateJWTToken = (payload: IJWTUser) => {

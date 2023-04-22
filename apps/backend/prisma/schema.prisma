@@ -54,18 +54,27 @@ model user_blog {
   updatedAt DateTime @updatedAt
 }
 
+enum BlogType {
+  publish
+  draft
+}
+
 model Blog {
-  id              String            @id @default(uuid())
-  title           String
-  content         String
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  comments        Comment[]
-  likes           Like[]
-  user_blog       user_blog[]
-  blog_topic      blog_topic[]
-  reading_history Reading_history[]
-  Category_Blog   Category_Blog[]
+  id                 String            @id @default(uuid())
+  title              String
+  content            String
+  type               BlogType
+  short_description  String
+  number_of_likes    Int               @default(0)
+  number_of_comments Int               @default(0)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  comments           Comment[]
+  likes              Like[]
+  user_blog          user_blog[]
+  blog_topic         blog_topic[]
+  reading_history    Reading_history[]
+  Category_Blog      Category_Blog[]
 }
 
 model Topic {
