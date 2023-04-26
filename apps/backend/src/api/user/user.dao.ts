@@ -1,4 +1,4 @@
-import { prisma } from '@src/primsa';
+import { prisma } from '@src/utils/primsa';
 
 export const getUserById_dao = async (id: string) => {
   return await prisma.user.findUnique({

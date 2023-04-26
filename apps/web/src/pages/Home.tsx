@@ -8,7 +8,7 @@ const fetchPage = async (pageParam = 0): Promise<IAllBlogsRes> => {
   const res = await fetch(
     `http://localhost:5000/api/v1/blog?page=${pageParam}`
   );
-  return res.json();
+  return await res.json();
 };
 
 const Home = () => {
@@ -19,7 +19,7 @@ const Home = () => {
     hasPreviousPage,
     isFetchingNextPage,
     isFetchingPreviousPage,
-    data: allBlogs,
+    data,
   } = useInfiniteQuery({
     queryKey: ["blogs"],
     queryFn: ({ pageParam }: { pageParam: number }) => fetchPage(pageParam),
@@ -33,10 +33,12 @@ const Home = () => {
       allPageParams
     ) => firstPage.prevCursor,
   });
+  console.log(data);
 
-  useEffect(() => {
-    fetchNextPage();
-  }, [allBlogs]);
+  // useEffect(() => {
+  //   fetchNextPage();
+  //   console.log(data?.pages);
+  // }, [data]);
 
   const handleScroll = () => {
     const scrollPosition = window.innerHeight + window.scrollY;
@@ -57,13 +59,11 @@ const Home = () => {
     };
   }, []);
 
-  console.log(allBlogs?.pages[0].blogs[1].blog.content);
-
   return (
     <div>
       <Grid container spacing={2}>
-        {allBlogs &&
-          allBlogs.pages.map((page: IAllBlogsRes) =>
+        {data &&
+          data?.pages.map((page: IAllBlogsRes) =>
             page.blogs.map((obj, ind) => (
               <Grid item xs={12} sm={6} md={4} key={obj.id}>
                 <BlogCard obj={obj} />

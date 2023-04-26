@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
 
 import ErrorResponse from '../interfaces/ErrorResponse';
 import { CustomError } from '../utils/customErrors';
@@ -32,22 +32,34 @@ const handleJWTError = () => new CustomError('Invalid token please login again',
 const handleJWTExpiredError = () => new CustomError('Token has expired please login again', 400);
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function errorHandler(err: Error, req: Request, res: Response<ErrorResponse>, next: NextFunction) {
+export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);
-  const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
-  let error = { ...err };
-  error.message = err.message;
+  let customError = {
+    // set default
+    statusCode: err.statusCode || 500,
+    msg: err.message || 'Something went wrong try again later',
+  };
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
-    console.log('handlePrismaError');
-    error = handlePrismaError(err);
-  } else if (error.name === 'JsonWebTokenError') {
-    error = handleJWTError();
-  } else if (error.name === 'TokenExpiredError') {
-    error = handleJWTExpiredError();
+    customError.msg = handlePrismaError(err);
+  } else if (err.name === 'JsonWebTokenError') {
+    customError.msg = handleJWTError();
+  } else if (err.name === 'TokenExpiredError') {
+    customError.msg = handleJWTExpiredError();
   }
-  res.status(statusCode);
-  res.json({
-    message: error.message || 'Internal Server Error',
-    stack: process.env.NODE_ENV === 'production' ? '🥞' : err.stack,
-  });
-}
+  if (err.name === 'ValidationError') {
+    customError.msg = Object.values(err.errors)
+      .map((item: any) => item.message)
+      .join(',');
+    customError.statusCode = 400;
+  }
+  if (err.code && err.code === 11000) {
+    customError.msg = `Duplicate value entered for ${Object.keys(err.keyValue)} field, please choose another value`;
+    customError.statusCode = 400;
+  }
+  if (err.name === 'CastError') {
+    customError.msg = `No item found with id : ${err.value}`;
+    customError.statusCode = 404;
+  }
+
+  return res.status(customError.statusCode).json({ msg: customError.msg });
+};

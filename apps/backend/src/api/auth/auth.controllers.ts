@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { registerValidator, loginValidator } from './auth.validators';
-import { BadRequestError } from '@src/utils/customErrors';
+import { BadRequestError, ForbiddenError, NotFoundError, UnauthorizedError } from '@src/utils/customErrors';
 import {
   createNewUser_dao,
   findUserByEmail_dao,
@@ -15,18 +15,21 @@ import {
 import { comparePassword, hashPassword } from '@src/utils/bcrypt';
 import { generateJWTToken } from '@src/utils/jwt';
 import { sendForgotPasswordEmail, sendVerificationEmail } from '@src/utils/mailer';
+import { optimizeAndUploadProfileImage } from '../file_upload/file_upload.services';
 
 export const register_controller = async (req: Request, res: Response) => {
   const validationResult = registerValidator.safeParse(req.body);
   if (!validationResult.success) {
     throw new BadRequestError(validationResult.error.message);
   }
+  const { originalImageUrl } = await optimizeAndUploadProfileImage(req.file as Express.Multer.File, 200);
   const reqUser = validationResult.data;
   const temp = {
     ...reqUser,
+    email: reqUser.email.toLowerCase(),
     password: await hashPassword(reqUser.password),
   };
-  const user = await createNewUser_dao(temp);
+  const user = await createNewUser_dao({ ...temp, profile_img: originalImageUrl });
   const payload = {
     userId: user.id,
     email: user.email,
@@ -84,8 +87,11 @@ export const verifyEmailRequest_controller = async (req: Request, res: Response)
   if (!userToken) {
     throw new BadRequestError('User not found');
   }
+  if (userToken.email_verification_status === true) {
+    throw new UnauthorizedError('Email already verified');
+  }
   if (userToken.email_verification_token !== token) {
-    throw new BadRequestError('Something went wrong');
+    throw new ForbiddenError('Something went wrong');
   }
   await updateEmailVerificationStatus_dao(userId);
   res.status(200).json({ success: true });

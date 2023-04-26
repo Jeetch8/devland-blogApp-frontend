@@ -24,7 +24,9 @@ const VerifyEmail = () => {
 
   if (isLoading || isFetching) return <div>Loading...</div>;
 
-  if (isError) return <div>Error</div>;
+  if (isError) {
+    return <div>{error?.message}</div>;
+  }
 
   return <div>{data?.data.success && <div>Success</div>}</div>;
 };

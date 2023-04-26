@@ -1,7 +1,13 @@
-import { prisma } from '@src/primsa';
-import { IRegisterReqType } from './auth.validators';
+interface User {
+  name: string;
+  email: string;
+  password: string;
+  profile_img: string;
+}
 
-export const createNewUser_dao = async (data: IRegisterReqType) => {
+import { prisma } from '@src/utils/primsa';
+
+export const createNewUser_dao = async (data: User) => {
   const { name, email, password, profile_img } = data;
   const user = await prisma.user.create({
     data: {
@@ -64,6 +70,7 @@ export const updateEmailVerificationStatus_dao = async (userId: string) => {
       userId,
     },
     data: {
+      email_verification_token: '',
       email_verification_status: true,
     },
   });

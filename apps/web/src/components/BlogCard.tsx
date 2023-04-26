@@ -11,12 +11,19 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { Button, CardActionArea, CardActions } from "@mui/material";
-import { IBlog } from "../interfaces/blog.interface";
+import { useNavigate, useNavigation } from "react-router-dom";
 
-export default function BlogCard({ obj }: { obj: IBlog }) {
+export default function BlogCard({ obj }: any) {
+  const navigate = useNavigate();
+  const navigateToBlog = () => {
+    let title = obj.blog.title;
+    let temp = encodeURIComponent(title.replace(/\s+/g, "-"));
+    navigate(`/blog/${temp}`);
+  };
+
   return (
     <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea>
+      <CardActionArea onClick={navigateToBlog}>
         <CardMedia
           component="img"
           height="140"
@@ -25,11 +32,10 @@ export default function BlogCard({ obj }: { obj: IBlog }) {
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
-            Lizard
+            {obj.title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
+            {obj.short_description}
           </Typography>
         </CardContent>
       </CardActionArea>

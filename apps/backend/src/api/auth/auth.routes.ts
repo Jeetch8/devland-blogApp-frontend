@@ -8,8 +8,9 @@ import {
 } from './auth.controllers';
 import { authenticateUser } from '@src/middleware/Auth';
 const router = express.Router();
+import { upload } from '../file_upload/file_upload.routes';
 
-router.post('/register', register_controller);
+router.post('/register', upload.single('profile'), register_controller);
 router.post('/login', login_controller);
 router.post('/forgot-password', forgotPasswordEmailRequest_controller);
 router.get('/verify-email-update', authenticateUser, verifyEmailRequest_controller);

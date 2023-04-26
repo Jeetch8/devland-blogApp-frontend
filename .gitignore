@@ -11,7 +11,8 @@
 /apps/**/.env.development.local
 /apps/**/.env.test.local
 /apps/**/.env.production.local
-
+/apps/**/src/logs
+/apps/**/uploads
 
 /packages/**/node_modules
 /packages/**/dist

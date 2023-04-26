@@ -18,7 +18,6 @@ export const authenticateUser = async (req: Request, res: Response, next: NextFu
     if (!payload) throw new UnauthorizedError('Invalid token');
     req.user = {
       userId: payload.userId,
-      name: payload.name,
       email: payload.email,
     };
 

@@ -5,12 +5,14 @@ import Register from "./pages/Register";
 import VerifyEmail from "./pages/VerifyEmail";
 import Home from "./pages/Home";
 import WriteBlog from "./pages/WriteBlog";
+import SingleBlog from "./pages/SingleBlog";
 
 const App = () => {
   return (
     <Routes>
       <Route element={<HomeLayout />}>
         <Route index element={<Home />} />
+        <Route path="blog/:id" element={<SingleBlog />} />
       </Route>
       <Route path="write" element={<WriteBlog />} />
       <Route path="login" element={<Login />} />

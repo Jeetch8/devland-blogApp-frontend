@@ -1,9 +1,11 @@
+import { BlogType } from '@prisma/client';
 import { z } from 'zod';
 
 export const createBlogSchema = z.object({
   title: z.string().min(1).max(255),
   content: z.string().min(1),
-  type: z.enum(['public', 'draft']),
+  type: z.enum([BlogType.draft, BlogType.publish]),
+  topicId: z.string().cuid(),
 });
 
 export const createBlogValidator = createBlogSchema
