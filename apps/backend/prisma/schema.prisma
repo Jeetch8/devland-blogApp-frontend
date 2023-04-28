@@ -8,19 +8,19 @@ datasource db {
 }
 
 model User {
-  id                     String                   @id @default(cuid())
-  name                   String
-  email                  String                   @unique
-  password               String
-  profile_img            String
-  createdAt              DateTime                 @default(now())
-  updatedAt              DateTime                 @updatedAt
-  user                   Blog[]
-  comments               Comment[]
-  likes                  Like[]
-  reading_history        Reading_history[]
-  User_token             User_token[]
-  user_bookmark_category user_bookmark_category[]
+  id                String              @id @default(cuid())
+  name              String
+  email             String              @unique
+  password          String
+  profile_img       String
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  user              Blog[]
+  comments          Comment[]
+  likes             Like[]
+  reading_history   Reading_history[]
+  User_token        User_token[]
+  Bookmark_Category Bookmark_Category[]
 }
 
 model Like {
@@ -103,22 +103,13 @@ model User_token {
 }
 
 model Bookmark_Category {
-  id                     String                   @id @default(cuid())
-  name                   String
-  createdAt              DateTime                 @default(now())
-  updatedAt              DateTime                 @updatedAt
-  user_bookmark_category user_bookmark_category[]
-  category_blog          Category_Blog[]
-}
-
-model user_bookmark_category {
-  id         String            @id @default(cuid())
-  user       User              @relation(fields: [userId], references: [id])
-  userId     String
-  category   Bookmark_Category @relation(fields: [categoryId], references: [id])
-  categoryId String
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @updatedAt
+  id            String          @id @default(cuid())
+  name          String
+  userId        String
+  user          User            @relation(fields: [userId], references: [id])
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  category_blog Category_Blog[]
 }
 
 model Category_Blog {

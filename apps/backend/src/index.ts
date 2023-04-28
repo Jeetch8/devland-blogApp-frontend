@@ -3,13 +3,14 @@ import { ValidateEnv } from '@utils/validateEnv';
 import { logger } from '@utils/logger';
 import { NODE_ENV, PORT } from './config/index';
 import { intialFileCleanup } from './utils/fileCleanup';
+import { seedFakeData } from './utils/fakeDataSeeder';
 
 ValidateEnv();
 
 const env = NODE_ENV || 'development';
 const port = PORT || 5000;
 
-// intialFileCleanup();
+// seedFakeData();
 
 app.listen(port, () => {
   logger.info(`=================================`);

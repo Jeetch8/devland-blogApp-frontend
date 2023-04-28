@@ -12,7 +12,10 @@ import CommentDrawer from "../components/CommentsDrawer";
 const SingleBlog = () => {
   const location = useLocation();
   const path = location.pathname.split("/");
-  const blogId = path[2];
+  const blogSlug = path[2];
+  let blogSlugArr = blogSlug.split("-");
+  let blogId = blogSlugArr[blogSlugArr.length - 1];
+  console.log(blogId);
   const { user } = useGlobalContext();
 
   const { data, isLoading, error, isFetching } = useQuery({
@@ -21,6 +24,7 @@ const SingleBlog = () => {
       const { data } = await CustomAxiosAuth(user?.token as string).get(
         `http://localhost:5000/api/v1/blog/${blogId}`
       );
+      console.log(data);
       return data;
     },
   });

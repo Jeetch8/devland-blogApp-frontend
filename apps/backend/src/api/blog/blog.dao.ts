@@ -16,6 +16,7 @@ export const getAllBlogs_dao = async (page: number) => {
       short_description: true,
       number_of_comments: true,
       number_of_likes: true,
+      banner_img: true,
       createdAt: true,
       user: {
         select: {
@@ -32,33 +33,35 @@ export const getBlogById_dao = async (id: string) => {
   return await prisma.blog.findUnique({
     where: { id },
     include: {
-      comments: {
-        take: 20,
-        orderBy: { createdAt: 'asc' },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-              profile_img: true,
-            },
-          },
-        },
-      },
-      likes: {
-        take: 20,
-        orderBy: { createdAt: 'asc' },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              profile_img: true,
-            },
-          },
-        },
-      },
+      comments: true,
+      //  {
+      //   take: 20,
+      //   orderBy: { createdAt: 'asc' },
+      //   include: {
+      //     user: {
+      //       select: {
+      //         id: true,
+      //         name: true,
+      //         email: true,
+      //         profile_img: true,
+      //       },
+      //     },
+      //   },
+      // },
+      likes: true,
+      //  {
+      //   take: 20,
+      //   orderBy: { createdAt: 'asc' },
+      //   include: {
+      //     user: {
+      //       select: {
+      //         id: true,
+      //         name: true,
+      //         profile_img: true,
+      //       },
+      //     },
+      //   },
+      // },
     },
   });
 };

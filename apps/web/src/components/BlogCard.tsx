@@ -12,13 +12,15 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { Button, CardActionArea, CardActions } from "@mui/material";
 import { useNavigate, useNavigation } from "react-router-dom";
+import CommentIcon from "@mui/icons-material/Comment";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 export default function BlogCard({ obj }: any) {
   const navigate = useNavigate();
   const navigateToBlog = () => {
-    let title = obj.blog.title;
+    let title = obj.title;
     let temp = encodeURIComponent(title.replace(/\s+/g, "-"));
-    navigate(`/blog/${temp}`);
+    navigate(`/blog/${temp}-${obj.id}`);
   };
 
   return (
@@ -27,7 +29,7 @@ export default function BlogCard({ obj }: any) {
         <CardMedia
           component="img"
           height="140"
-          image="/static/images/cards/contemplative-reptile.jpg"
+          image={obj.banner_img}
           alt="green iguana"
         />
         <CardContent>
@@ -40,9 +42,12 @@ export default function BlogCard({ obj }: any) {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button size="small" color="primary">
-          Share
-        </Button>
+        <span>
+          <FavoriteIcon /> {obj.number_of_likes}
+        </span>
+        <span>
+          <CommentIcon /> {obj.number_of_comments}
+        </span>
       </CardActions>
     </Card>
   );

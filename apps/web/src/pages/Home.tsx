@@ -1,6 +1,6 @@
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import BlogCard from "../components/BlogCard";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { IAllBlogsRes } from "../interfaces/blog.interface";
 
@@ -8,7 +8,9 @@ const fetchPage = async (pageParam = 0): Promise<IAllBlogsRes> => {
   const res = await fetch(
     `http://localhost:5000/api/v1/blog?page=${pageParam}`
   );
-  return await res.json();
+  const json = await res.json();
+  console.log(json);
+  return json;
 };
 
 const Home = () => {
@@ -16,38 +18,29 @@ const Home = () => {
     fetchNextPage,
     fetchPreviousPage,
     hasNextPage,
-    hasPreviousPage,
     isFetchingNextPage,
+    hasPreviousPage,
     isFetchingPreviousPage,
     data,
   } = useInfiniteQuery({
     queryKey: ["blogs"],
     queryFn: ({ pageParam }: { pageParam: number }) => fetchPage(pageParam),
     initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages, lastPageParam, allPageParams) =>
-      lastPage.nextCursor,
-    getPreviousPageParam: (
-      firstPage,
-      allPages,
-      firstPageParam,
-      allPageParams
-    ) => firstPage.prevCursor,
+    getNextPageParam: (lastPage, allPages) => {
+      console.log(lastPage, allPages, "lastPage, allPages");
+      const morePagesExist = lastPage?.nextPage > allPages.length;
+      return morePagesExist ? lastPage?.nextPage : undefined;
+    },
+    getPreviousPageParam: (firstPage, allPages) => {
+      const prevPageExists = firstPage?.prevPage >= 0;
+      return prevPageExists ? firstPage?.prevPage : undefined;
+    },
   });
-  console.log(data);
-
-  // useEffect(() => {
-  //   fetchNextPage();
-  //   console.log(data?.pages);
-  // }, [data]);
 
   const handleScroll = () => {
     const scrollPosition = window.innerHeight + window.scrollY;
     const documentHeight = document.documentElement.offsetHeight;
-    if (
-      scrollPosition >= documentHeight * 0.9 &&
-      hasNextPage &&
-      !isFetchingNextPage
-    ) {
+    if (scrollPosition >= documentHeight * 0.85 && !isFetchingNextPage) {
       fetchNextPage(); // Fetch next page when user scrolls to 90% of the document height
     }
   };
@@ -60,7 +53,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <Box sx={{ padding: "30px 40px 10px 40px" }}>
       <Grid container spacing={2}>
         {data &&
           data?.pages.map((page: IAllBlogsRes) =>
@@ -71,7 +64,10 @@ const Home = () => {
             ))
           )}
       </Grid>
-    </div>
+      <Grid sx={{ display: "flex", justifyContent: "center", font: "20px" }}>
+        <p>{!hasNextPage && "No more blogs to show"}</p>
+      </Grid>
+    </Box>
   );
 };
 
