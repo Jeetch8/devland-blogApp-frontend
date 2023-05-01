@@ -1,22 +1,33 @@
+interface Props {
+  commentsList: any;
+  numberOfComments: number;
+  blogId: string;
+}
+
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Button from "@mui/material/Button";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import { Avatar, Divider, TextareaAutosize } from "@mui/material";
+import { Avatar } from "@mui/material";
 import { useGlobalContext } from "../context/GlobalContext";
 import CloseIcon from "@mui/icons-material/Close";
-import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { base_url } from "../utils/Constants";
 import { CustomAxiosAuth } from "../utils/CustomAxios";
-import { useLocation } from "react-router-dom";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 
-export default function TemporaryDrawer({ commentsList }: any) {
+dayjs.extend(relativeTime);
+export default function BlogCommentsDrawer({
+  commentsList,
+  numberOfComments,
+  blogId,
+}: Props) {
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const { user } = useGlobalContext();
   const [commentInput, setCommentInput] = React.useState("");
-  const blogId = useLocation().pathname.split("/")[2];
+  const date = dayjs();
 
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -49,6 +60,7 @@ export default function TemporaryDrawer({ commentsList }: any) {
       <>
         <Button onClick={toggleDrawer(true)}>
           <ChatBubbleOutlineIcon />
+          <span>{numberOfComments}</span>
         </Button>
         <Drawer
           open={isDrawerOpen}
@@ -115,7 +127,7 @@ export default function TemporaryDrawer({ commentsList }: any) {
             </Box>
             {commentsList?.map((el: any) => {
               return (
-                <Box>
+                <Box key={el.id} sx={{ padding: "20px" }}>
                   <Box
                     sx={{
                       display: "flex",
@@ -125,17 +137,15 @@ export default function TemporaryDrawer({ commentsList }: any) {
                     }}
                   >
                     <Avatar src={el.user.profile_img} />
-                    <span>{el.user.name}</span>
+                    <span style={{ lineHeight: "3px" }}>
+                      <p>{el.user.name}</p>
+                      <p style={{ fontSize: "14px" }}>
+                        {date.fromNow(el.createdAt)}
+                      </p>
+                    </span>
                   </Box>
-                  <Box
-                    sx={{
-                      boxShadow:
-                        "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                      padding: "20px",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    <p>{el.comment}</p>
+                  <Box>
+                    <p>{el.content}</p>
                   </Box>
                 </Box>
               );

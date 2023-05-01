@@ -2,7 +2,7 @@ import { ICreateBlog_dao } from '@src/interfaces/blog.types';
 import { prisma } from '@src/utils/primsa';
 
 export const getAllBlogs_dao = async (page: number) => {
-  return await prisma.blog.findMany({
+  const blogs = await prisma.blog.findMany({
     where: {
       type: 'publish',
     },
@@ -27,41 +27,54 @@ export const getAllBlogs_dao = async (page: number) => {
       },
     },
   });
+  const count = await prisma.blog.count({
+    where: {
+      type: 'publish',
+    },
+  });
+  return { blogs, count };
 };
 
 export const getBlogById_dao = async (id: string) => {
   return await prisma.blog.findUnique({
     where: { id },
     include: {
-      comments: true,
-      //  {
-      //   take: 20,
-      //   orderBy: { createdAt: 'asc' },
-      //   include: {
-      //     user: {
-      //       select: {
-      //         id: true,
-      //         name: true,
-      //         email: true,
-      //         profile_img: true,
-      //       },
-      //     },
-      //   },
-      // },
-      likes: true,
-      //  {
-      //   take: 20,
-      //   orderBy: { createdAt: 'asc' },
-      //   include: {
-      //     user: {
-      //       select: {
-      //         id: true,
-      //         name: true,
-      //         profile_img: true,
-      //       },
-      //     },
-      //   },
-      // },
+      comments: {
+        take: 20,
+        orderBy: { createdAt: 'asc' },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              profile_img: true,
+            },
+          },
+        },
+      },
+      likes: {
+        take: 20,
+        orderBy: { createdAt: 'asc' },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              profile_img: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};
+
+export const hasUserLikedBlog_dao = async ({ userId, blogId }: { userId: string; blogId: string }) => {
+  return await prisma.like.findFirst({
+    where: {
+      userId,
+      blogId,
     },
   });
 };
@@ -113,10 +126,17 @@ export const getAllBlogLikedProfile_dao = async ({ blogId, skip, take }: { blogI
 };
 
 export const likeBlog_dao = async ({ userId, blogId }: { userId: string; blogId: string }) => {
-  return await prisma.like.create({
+  return await prisma.blog.update({
+    where: { id: blogId },
     data: {
-      userId,
-      blogId,
+      number_of_likes: {
+        increment: 1,
+      },
+      likes: {
+        create: {
+          userId,
+        },
+      },
     },
   });
 };

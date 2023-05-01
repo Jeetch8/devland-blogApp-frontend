@@ -50,24 +50,24 @@ enum BlogType {
 }
 
 model Blog {
-  id                 String            @id @default(cuid())
+  id                 String                   @id @default(cuid())
   title              String
   content            String
   type               BlogType
   short_description  String
-  number_of_likes    Int               @default(0)
-  number_of_comments Int               @default(0)
-  user               User              @relation(fields: [authorId], references: [id])
+  number_of_likes    Int                      @default(0)
+  number_of_comments Int                      @default(0)
+  user               User                     @relation(fields: [authorId], references: [id])
   authorId           String
-  topic              Topic             @relation(fields: [topicId], references: [id])
+  topic              Topic                    @relation(fields: [topicId], references: [id])
   topicId            String
   banner_img         String
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
   comments           Comment[]
   likes              Like[]
   reading_history    Reading_history[]
-  Category_Blog      Category_Blog[]
+  Category_Blog      Bookmark_Category_Blog[]
 }
 
 model Topic {
@@ -103,19 +103,21 @@ model User_token {
 }
 
 model Bookmark_Category {
-  id            String          @id @default(cuid())
+  id            String                   @id @default(cuid())
   name          String
+  description   String
   userId        String
-  user          User            @relation(fields: [userId], references: [id])
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  category_blog Category_Blog[]
+  user          User                     @relation(fields: [userId], references: [id])
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
+  category_blog Bookmark_Category_Blog[]
 }
 
-model Category_Blog {
+model Bookmark_Category_Blog {
   id         String            @id @default(cuid())
   category   Bookmark_Category @relation(fields: [categoryId], references: [id])
   categoryId String
+  note       String
   blog       Blog              @relation(fields: [blogId], references: [id])
   blogId     String
   createdAt  DateTime          @default(now())

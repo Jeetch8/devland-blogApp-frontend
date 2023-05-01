@@ -33,6 +33,14 @@ function createComments() {
   };
 }
 
+function createBookmarkCategory(userId: string) {
+  return {
+    name: faker.person.fullName(),
+    description: faker.lorem.sentences({ min: 1, max: 2 }),
+    userId: userId,
+  };
+}
+
 export async function seedFakeData() {
   if (process.env.NODE_ENV !== 'development') return;
   try {
@@ -42,6 +50,8 @@ export async function seedFakeData() {
     await prisma.topic.deleteMany();
     await prisma.user_token.deleteMany();
     await prisma.user.deleteMany();
+    await prisma.bookmark_Category.deleteMany();
+    await prisma.bookmark_Category_Blog.deleteMany();
     const usersArr = Array.from({ length: 10 }, createFakeUser);
     await prisma.user.createMany({ data: usersArr });
     const userIds = await prisma.user.findMany({ select: { id: true } });
@@ -85,6 +95,30 @@ export async function seedFakeData() {
           },
         });
       });
+    });
+    await prisma.bookmark_Category.createMany({
+      data: [createBookmarkCategory(userIds[0].id), createBookmarkCategory(userIds[0].id)],
+    });
+    const allBookmarkCategoryIds = await prisma.bookmark_Category.findMany({ select: { id: true } });
+    const temp1 = Array.from({ length: 10 }, (_, ind) => {
+      return {
+        categoryId: allBookmarkCategoryIds[0].id,
+        note: faker.lorem.sentence(),
+        blogId: blogIds[ind].id,
+      };
+    });
+    const temp2 = Array.from({ length: 10 }, (_, ind) => {
+      return {
+        categoryId: allBookmarkCategoryIds[1].id,
+        note: faker.lorem.sentence(),
+        blogId: blogIds[ind].id,
+      };
+    });
+    await prisma.bookmark_Category_Blog.createMany({
+      data: temp1,
+    });
+    await prisma.bookmark_Category_Blog.createMany({
+      data: temp2,
     });
     console.log('DB seeded with fake data');
   } catch (error) {

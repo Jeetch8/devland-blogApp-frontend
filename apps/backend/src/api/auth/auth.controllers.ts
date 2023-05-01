@@ -39,6 +39,7 @@ export const register_controller = async (req: Request, res: Response) => {
   await sendVerificationEmail(user.email, token);
   const temp2 = {
     ...payload,
+    name: user.name,
     profile_img: user.profile_img,
     token,
   };
@@ -70,6 +71,7 @@ export const login_controller = async (req: Request, res: Response) => {
   const token = generateJWTToken(payload);
   const temp = {
     ...payload,
+    name: user.name,
     profile_img: user.profile_img,
     token,
   };

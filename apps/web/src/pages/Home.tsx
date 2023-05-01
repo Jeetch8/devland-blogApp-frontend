@@ -9,7 +9,6 @@ const fetchPage = async (pageParam = 0): Promise<IAllBlogsRes> => {
     `http://localhost:5000/api/v1/blog?page=${pageParam}`
   );
   const json = await res.json();
-  console.log(json);
   return json;
 };
 
@@ -27,13 +26,12 @@ const Home = () => {
     queryFn: ({ pageParam }: { pageParam: number }) => fetchPage(pageParam),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
-      console.log(lastPage, allPages, "lastPage, allPages");
-      const morePagesExist = lastPage?.nextPage > allPages.length;
-      return morePagesExist ? lastPage?.nextPage : undefined;
+      const morePagesExist = lastPage?.nextCursor > allPages.length;
+      return morePagesExist ? lastPage?.nextCursor : undefined;
     },
     getPreviousPageParam: (firstPage, allPages) => {
-      const prevPageExists = firstPage?.prevPage >= 0;
-      return prevPageExists ? firstPage?.prevPage : undefined;
+      const prevPageExists = firstPage?.prevCursor >= 0;
+      return prevPageExists ? firstPage?.prevCursor : undefined;
     },
   });
 

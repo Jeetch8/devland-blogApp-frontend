@@ -10,10 +10,12 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { Button, CardActionArea, CardActions } from "@mui/material";
-import { useNavigate, useNavigation } from "react-router-dom";
+import { Avatar, CardActionArea, CardActions, CardHeader } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import CommentIcon from "@mui/icons-material/Comment";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import dayjs from "dayjs";
+import AddToBookmarSelect from "./AddToBookmarSelect";
 
 export default function BlogCard({ obj }: any) {
   const navigate = useNavigate();
@@ -22,9 +24,15 @@ export default function BlogCard({ obj }: any) {
     let temp = encodeURIComponent(title.replace(/\s+/g, "-"));
     navigate(`/blog/${temp}-${obj.id}`);
   };
+  const createdAt = dayjs(obj.createdAt).fromNow();
 
   return (
     <Card sx={{ maxWidth: 345 }}>
+      <CardHeader
+        avatar={<Avatar src={obj.user.profile_img} aria-label="recipe" />}
+        title={obj.user.name}
+        subheader={createdAt}
+      />
       <CardActionArea onClick={navigateToBlog}>
         <CardMedia
           component="img"
@@ -48,6 +56,7 @@ export default function BlogCard({ obj }: any) {
         <span>
           <CommentIcon /> {obj.number_of_comments}
         </span>
+        <AddToBookmarSelect />
       </CardActions>
     </Card>
   );

@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import { GlobalContextProvider } from "./context/GlobalContext";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallback from "./components/ErrorFallback";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryCluent = new QueryClient({
   defaultOptions: {
@@ -28,6 +29,7 @@ root.render(
           <BrowserRouter>
             <App />
           </BrowserRouter>
+          <ReactQueryDevtools initialIsOpen={false} position="bottom" />
         </QueryClientProvider>
         <Toaster />
       </GlobalContextProvider>

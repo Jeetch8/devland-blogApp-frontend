@@ -11,6 +11,7 @@ const env = NODE_ENV || 'development';
 const port = PORT || 5000;
 
 // seedFakeData();
+// intialFileCleanup()
 
 app.listen(port, () => {
   logger.info(`=================================`);
