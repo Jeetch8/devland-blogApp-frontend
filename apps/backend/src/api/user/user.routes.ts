@@ -1,7 +1,9 @@
 import express from 'express';
 const router = express.Router();
-import { getMe } from './user.controllers';
+import { getMe_controller, getUserStats_controller } from './user.controllers';
+import { authenticateUser } from '@src/middleware/Auth';
 
-router.get('/me', getMe);
+router.get('/me', authenticateUser, getMe_controller);
+router.get('/stats', authenticateUser, getUserStats_controller);
 
 export default router;

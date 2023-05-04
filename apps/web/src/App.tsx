@@ -8,6 +8,7 @@ import WriteBlog from "./pages/WriteBlog";
 import SingleBlog from "./pages/SingleBlog";
 import Bookmark from "./pages/Bookmark";
 import BookmarkBlogs from "./pages/BookmarkBlogs";
+import UserStats from "./pages/UserStats";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="blog/:id" element={<SingleBlog />} />
         <Route path="bookmarks" element={<Bookmark />} />
         <Route path="/bookmark/:categoryId" element={<BookmarkBlogs />} />
+        <Route path="/stats" element={<UserStats />} />
       </Route>
       <Route path="write" element={<WriteBlog />} />
       <Route path="login" element={<Login />} />

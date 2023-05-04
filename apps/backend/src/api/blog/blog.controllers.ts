@@ -10,6 +10,7 @@ import {
   getAllBlogLikedProfile_dao,
   hasUserLikedBlog_dao,
   likeBlog_dao,
+  updateBlogStats_dao,
 } from './blog.dao';
 import { createBlogValidator } from './blog.validators';
 import { parse } from 'node-html-parser';
@@ -35,6 +36,8 @@ export const getBlogById_controller = async (req: Request, res: Response) => {
   const { userId } = req.user;
   try {
     const blog = await getBlogById_dao(id);
+    const date = new Date().toISOString().split('T')[0];
+    await updateBlogStats_dao(blog.id, date, 'number_of_views');
     const hasUserLikedBlog = await hasUserLikedBlog_dao({ userId: userId, blogId: id });
     if (hasUserLikedBlog) {
       const temp = { hasUserLikedBlog, ...blog };
@@ -70,6 +73,8 @@ export const commentOnBlog_controller = async (req: Request, res: Response) => {
   console.log(value, blogId);
   if (!value) return res.status(400).json({ success: false, error: 'Comment is required' });
   const blogComment = await commentOnBlog_dao({ value, userId, blogId });
+  const date = new Date().toISOString().split('T')[0];
+  await updateBlogStats_dao(blogId, date, 'number_of_comments');
   res.status(200).json({ success: true, blogComment });
 };
 
@@ -77,5 +82,7 @@ export const likeBlog_controller = async (req: Request, res: Response) => {
   const { userId } = req.user;
   const { blogId } = req.params;
   const blogComment = await likeBlog_dao({ userId, blogId });
+  const date = new Date().toISOString().split('T')[0];
+  await updateBlogStats_dao(blogId, date, 'number_of_likes');
   res.status(200).json({ success: true, blogComment });
 };

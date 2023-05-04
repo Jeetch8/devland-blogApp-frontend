@@ -18,6 +18,7 @@ const pages = [
   { title: "Profile", path: "/profile" },
   { title: "Bookmarks", path: "/bookmarks" },
   { title: "Write", path: "/write" },
+  { title: "Stats", path: "/stats" },
 ];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 

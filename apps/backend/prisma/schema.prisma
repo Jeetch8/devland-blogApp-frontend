@@ -55,6 +55,7 @@ model Blog {
   content            String
   type               BlogType
   short_description  String
+  number_of_views    Int                      @default(0)
   number_of_likes    Int                      @default(0)
   number_of_comments Int                      @default(0)
   user               User                     @relation(fields: [authorId], references: [id])
@@ -68,6 +69,7 @@ model Blog {
   likes              Like[]
   reading_history    Reading_history[]
   Category_Blog      Bookmark_Category_Blog[]
+  blog_stats         blog_stats[]
 }
 
 model Topic {
@@ -122,4 +124,16 @@ model Bookmark_Category_Blog {
   blogId     String
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt
+}
+
+model blog_stats {
+  id                 String   @id @default(cuid())
+  blog               Blog     @relation(fields: [blogId], references: [id])
+  blogId             String
+  number_of_views    Int      @default(0)
+  number_of_likes    Int      @default(0)
+  number_of_comments Int      @default(0)
+  date               String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }

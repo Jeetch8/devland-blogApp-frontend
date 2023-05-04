@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { prisma } from './primsa';
 import { BlogType } from '@prisma/client';
+import dayjs, { Dayjs } from 'dayjs';
 
 function createFakeUser() {
   return {
@@ -41,85 +42,117 @@ function createBookmarkCategory(userId: string) {
   };
 }
 
+// export async function seedFakeData() {
+//   if (process.env.NODE_ENV !== 'development') return;
+//   try {
+//     await prisma.like.deleteMany();
+//     await prisma.comment.deleteMany();
+//     await prisma.blog.deleteMany();
+//     await prisma.topic.deleteMany();
+//     await prisma.user_token.deleteMany();
+//     await prisma.user.deleteMany();
+//     await prisma.bookmark_Category.deleteMany();
+//     await prisma.bookmark_Category_Blog.deleteMany();
+//     const usersArr = Array.from({ length: 10 }, createFakeUser);
+//     await prisma.user.createMany({ data: usersArr });
+//     const userIds = await prisma.user.findMany({ select: { id: true } });
+//     const topicsArr = Array.from({ length: 20 }, createTopics);
+//     await prisma.topic.createMany({ data: topicsArr });
+//     const topicIds = await prisma.topic.findMany({ select: { id: true } });
+//     const blogsArr: any = [];
+//     topicIds.forEach(topic => {
+//       userIds.forEach(user => {
+//         blogsArr.push({
+//           ...createBlobgs(),
+//           authorId: user.id,
+//           topicId: topic.id,
+//         });
+//       });
+//     });
+//     await prisma.blog.createMany({ data: blogsArr });
+//     const blogIds = await prisma.blog.findMany({ select: { id: true } });
+//     blogIds.forEach(blog => {
+//       userIds.forEach(async user => {
+//         await prisma.blog.update({
+//           where: { id: blog.id },
+//           data: {
+//             number_of_comments: {
+//               increment: 1,
+//             },
+//             number_of_likes: {
+//               increment: 1,
+//             },
+//             likes: {
+//               create: {
+//                 userId: user.id,
+//               },
+//             },
+//             comments: {
+//               create: {
+//                 content: faker.lorem.paragraphs(),
+//                 userId: user.id,
+//               },
+//             },
+//           },
+//         });
+//       });
+//     });
+//     await prisma.bookmark_Category.createMany({
+//       data: [createBookmarkCategory(userIds[0].id), createBookmarkCategory(userIds[0].id)],
+//     });
+//     const allBookmarkCategoryIds = await prisma.bookmark_Category.findMany({ select: { id: true } });
+//     const temp1 = Array.from({ length: 10 }, (_, ind) => {
+//       return {
+//         categoryId: allBookmarkCategoryIds[0].id,
+//         note: faker.lorem.sentence(),
+//         blogId: blogIds[ind].id,
+//       };
+//     });
+//     const temp2 = Array.from({ length: 10 }, (_, ind) => {
+//       return {
+//         categoryId: allBookmarkCategoryIds[1].id,
+//         note: faker.lorem.sentence(),
+//         blogId: blogIds[ind].id,
+//       };
+//     });
+//     await prisma.bookmark_Category_Blog.createMany({
+//       data: temp1,
+//     });
+//     await prisma.bookmark_Category_Blog.createMany({
+//       data: temp2,
+//     });
+//     console.log('DB seeded with fake data');
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+
+function generateBlogStats(blogId: string, date: string) {
+  return {
+    blogId,
+    number_of_views: faker.number.int({ max: 1000 }),
+    number_of_likes: faker.number.int({ max: 1000 }),
+    number_of_comments: faker.number.int({ max: 1000 }),
+    // date: faker.date.between({ from: '2023-01-01', to: '2024-02-03' }).toISOString().split('T')[0],
+    date,
+  };
+}
+
 export async function seedFakeData() {
-  if (process.env.NODE_ENV !== 'development') return;
   try {
-    await prisma.like.deleteMany();
-    await prisma.comment.deleteMany();
-    await prisma.blog.deleteMany();
-    await prisma.topic.deleteMany();
-    await prisma.user_token.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.bookmark_Category.deleteMany();
-    await prisma.bookmark_Category_Blog.deleteMany();
-    const usersArr = Array.from({ length: 10 }, createFakeUser);
-    await prisma.user.createMany({ data: usersArr });
-    const userIds = await prisma.user.findMany({ select: { id: true } });
-    const topicsArr = Array.from({ length: 20 }, createTopics);
-    await prisma.topic.createMany({ data: topicsArr });
-    const topicIds = await prisma.topic.findMany({ select: { id: true } });
-    const blogsArr: any = [];
-    topicIds.forEach(topic => {
-      userIds.forEach(user => {
-        blogsArr.push({
-          ...createBlobgs(),
-          authorId: user.id,
-          topicId: topic.id,
-        });
-      });
-    });
-    await prisma.blog.createMany({ data: blogsArr });
+    await prisma.blog_stats.deleteMany();
     const blogIds = await prisma.blog.findMany({ select: { id: true } });
+    const blogStatsArr: any = [];
     blogIds.forEach(blog => {
-      userIds.forEach(async user => {
-        await prisma.blog.update({
-          where: { id: blog.id },
-          data: {
-            number_of_comments: {
-              increment: 1,
-            },
-            number_of_likes: {
-              increment: 1,
-            },
-            likes: {
-              create: {
-                userId: user.id,
-              },
-            },
-            comments: {
-              create: {
-                content: faker.lorem.paragraphs(),
-                userId: user.id,
-              },
-            },
-          },
-        });
-      });
+      let temp = dayjs().subtract(365, 'day');
+      for (let i = 0; i < 365; i++) {
+        let addedDate = temp.add(1, 'day');
+        let date = addedDate.format('YYYY-MM-DD');
+        temp = addedDate;
+        blogStatsArr.push(generateBlogStats(blog.id, date));
+      }
     });
-    await prisma.bookmark_Category.createMany({
-      data: [createBookmarkCategory(userIds[0].id), createBookmarkCategory(userIds[0].id)],
-    });
-    const allBookmarkCategoryIds = await prisma.bookmark_Category.findMany({ select: { id: true } });
-    const temp1 = Array.from({ length: 10 }, (_, ind) => {
-      return {
-        categoryId: allBookmarkCategoryIds[0].id,
-        note: faker.lorem.sentence(),
-        blogId: blogIds[ind].id,
-      };
-    });
-    const temp2 = Array.from({ length: 10 }, (_, ind) => {
-      return {
-        categoryId: allBookmarkCategoryIds[1].id,
-        note: faker.lorem.sentence(),
-        blogId: blogIds[ind].id,
-      };
-    });
-    await prisma.bookmark_Category_Blog.createMany({
-      data: temp1,
-    });
-    await prisma.bookmark_Category_Blog.createMany({
-      data: temp2,
-    });
+    await prisma.blog_stats.createMany({ data: blogStatsArr });
     console.log('DB seeded with fake data');
   } catch (error) {
     console.log(error);

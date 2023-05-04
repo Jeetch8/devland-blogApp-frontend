@@ -36,8 +36,15 @@ export const getAllBlogs_dao = async (page: number) => {
 };
 
 export const getBlogById_dao = async (id: string) => {
-  return await prisma.blog.findUnique({
-    where: { id },
+  return await prisma.blog.update({
+    where: {
+      id,
+    },
+    data: {
+      number_of_views: {
+        increment: 1,
+      },
+    },
     include: {
       comments: {
         take: 20,
@@ -126,6 +133,14 @@ export const getAllBlogLikedProfile_dao = async ({ blogId, skip, take }: { blogI
 };
 
 export const likeBlog_dao = async ({ userId, blogId }: { userId: string; blogId: string }) => {
+  await prisma.blog.update({
+    where: { id: blogId },
+    data: {
+      number_of_likes: {
+        increment: 1,
+      },
+    },
+  });
   return await prisma.blog.update({
     where: { id: blogId },
     data: {
@@ -142,6 +157,14 @@ export const likeBlog_dao = async ({ userId, blogId }: { userId: string; blogId:
 };
 
 export const commentOnBlog_dao = async ({ value, userId, blogId }: { value: string; userId: string; blogId: string }) => {
+  await prisma.blog.update({
+    where: { id: blogId },
+    data: {
+      number_of_comments: {
+        increment: 1,
+      },
+    },
+  });
   return await prisma.comment.create({
     data: {
       userId,
@@ -149,4 +172,33 @@ export const commentOnBlog_dao = async ({ value, userId, blogId }: { value: stri
       blogId,
     },
   });
+};
+
+export const updateBlogStats_dao = async (blogId: string, date: string, field: string) => {
+  const blogStats = await prisma.blog_stats.findFirst({
+    where: {
+      blogId,
+      date,
+    },
+  });
+  if (!blogStats) {
+    await prisma.blog_stats.create({
+      data: {
+        blogId,
+        date,
+        [field]: 1,
+      },
+    });
+  } else {
+    await prisma.blog_stats.update({
+      where: {
+        id: blogStats.id,
+      },
+      data: {
+        [field]: {
+          increment: 1,
+        },
+      },
+    });
+  }
 };
